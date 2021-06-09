@@ -1,0 +1,54 @@
+{
+  "name": "hasura-actions",
+  "package-specs": [
+    {
+      "module": "commonjs",
+      "in-source": true
+    }
+  ],
+  "graphql": {
+    "apolloMode": true,
+    "extendMutation": "ApolloClient.GraphQL_PPX.ExtendMutation",
+    "extendQuery": "ApolloClient.GraphQL_PPX.ExtendQuery",
+    "extendSubscription": "ApolloClient.GraphQL_PPX.ExtendSubscription",
+    "templateTagReturnType": "ApolloClient.GraphQL_PPX.templateTagReturnType",
+    "templateTagImport": "gql",
+    "templateTagLocation": "@apollo/client",
+    "custom-fields": {
+      "BigInt": "BigInt",
+      "Bytes": "Bytes"
+    }
+  },
+  "bsc-flags": [
+    "-open Belt"
+  ],
+  "ppx-flags": [
+    "@reasonml-community/graphql-ppx/ppx",
+    "decco/ppx",
+    "bs-let/ppx",
+    "res-logger/ppx"
+  ],
+  "reason": {
+    "react-jsx": 3
+  },
+  "refmt": 3,
+  "sources": [
+    {
+      "dir": "src",
+      "subdirs": true
+    }
+  ],
+  "suffix": ".bs.js",
+  "bs-dependencies": [
+    "bs-express",
+    "decco",
+    "serbet",
+    "bs-fetch",
+    "res-logger",
+    "@reasonml-community/graphql-ppx",
+    "reason-apollo-client",
+    "@yawaramin/prometo",
+    "bs-mocha",
+    "bs-cron"
+  ]
+}
