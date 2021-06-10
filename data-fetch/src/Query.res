@@ -1,3 +1,4 @@
+open GqlConverters
 
 // NOTE: only gets first 1000, won't get more than that
 module GetAllFeeds = %graphql(`
@@ -10,14 +11,14 @@ module GetAllFeeds = %graphql(`
 `)
 
 module GetFeedData = %graphql(`
-  query getFeedData($offset: int!, $feedId: string!) {
-    feeds(id: $feedId) {
+  query getFeedData($offset: Int!, $feedId: String!) {
+    feed (id: $feedId) {
       id
       name
-      rounds (first: 1000, skip: $offset) {
+      rounds (first: 1000, skip: $offset, orderBy: unixTimestamp, orderDirection: asc) {
+        number @ppxCustom(module: "BigInt")
+        value @ppxCustom(module: "BigInt")
         unixTimestamp
-        number
-        value
       }
     }
   }

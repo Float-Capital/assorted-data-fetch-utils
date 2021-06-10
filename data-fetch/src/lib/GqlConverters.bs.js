@@ -2,7 +2,7 @@
 'use strict';
 
 var BnJs = require("bn.js");
-var Js_json = require("bs-platform/lib/js/js_json.js");
+var Js_json = require("rescript/lib/js/js_json.js");
 
 function parse(json) {
   var str = Js_json.decodeString(json);
