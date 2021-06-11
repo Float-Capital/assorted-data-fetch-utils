@@ -7,15 +7,11 @@
     "res:build": "rescript",
     "res:start": "rescript build -w",
     "res:clean": "rescript clean",
-    "re:clean": "bsb -clean-world",
-    "re:start": "bsb -make-world -w",
-    "re:build": "bsb -make-world",
-    "run": "node ./src/Index.bs.js",
+    "getData": "node ./src/Index.bs.js",
     "updateSchema": "get-graphql-schema https://api.thegraph.com/subgraphs/name/alejandro-larumbe/chainlink-matic-mainnet -h 'x-hasura-admin-secret=testing' -j > graphql_schema.json"
   },
   "devDependencies": {
     "@reasonml-community/graphql-ppx": "^1.2.0",
-    "bs-platform": "9.0.0",
     "dotenv": "^10.0.0",
     "get-graphql-schema": "^2.1.2",
     "rescript": "^9.1.3"

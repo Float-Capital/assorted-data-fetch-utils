@@ -61,7 +61,7 @@ let _getAllFeeds = client.query(~query=module(Query.GetAllFeeds), ())->JsPromise
                   ()
                 })
                 offset := offset.contents + 1000
-                if rounds->Array.length < 1000 || offset.contents == 2000 {
+                if rounds->Array.length < 1000 {
                   finishedProcessing := true
                 }
               | Ok({data: {feed: None}}) => Js.log("No data available")

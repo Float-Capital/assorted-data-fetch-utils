@@ -77,7 +77,7 @@ var _getAllFeeds = Curry._6(client.rescript_query, {
                                                                     
                                                                   }));
                                                             offset.contents = offset.contents + 1000 | 0;
-                                                            if (rounds.length < 1000 || offset.contents === 2000) {
+                                                            if (rounds.length < 1000) {
                                                               finishedProcessing.contents = true;
                                                               return ;
                                                             } else {

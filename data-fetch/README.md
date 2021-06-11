@@ -1,15 +1,10 @@
-## Examples for `rescript-apollo-client`
-
-Here you'll find pretty sparse example of a fully functioning app and basic usage. It leverages a lightweight [example graphql server](https://github.com/zth/graphql-client-example-server) and webpack to serve app assets.
-
-#### Trying it out locally
+#### Running the code
 
 ```sh
 yarn
 
-yarn start
+yarn res:build
 # (in another tab) Run the development server
-yarn dev-server
-# (in yet another tab!) Run the example GraphQL server
-yarn graphql-server
+yarn getData
+# Grab a coffee, this will take a while
 ```
