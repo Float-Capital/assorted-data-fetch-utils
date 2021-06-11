@@ -16,8 +16,8 @@ module GetFeedData = %graphql(`
       id
       name
       rounds (first: 1000, skip: $offset, orderBy: unixTimestamp, orderDirection: asc) {
-        number @ppxCustom(module: "BigInt")
-        value @ppxCustom(module: "BigInt")
+        number
+        value
         unixTimestamp
       }
     }

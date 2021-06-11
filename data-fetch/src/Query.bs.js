@@ -3,14 +3,26 @@
 
 var Caml_option = require("rescript/lib/js/caml_option.js");
 var GqlConverters = require("./lib/GqlConverters.bs.js");
+var ApolloClient__React_Hooks_UseQuery = require("rescript-apollo-client/src/@apollo/client/react/hooks/ApolloClient__React_Hooks_UseQuery.bs.js");
 
 var Raw = {};
+
+var query = (require("@apollo/client").gql`
+  query getAllFeeds  {
+    feeds(first: 1000)  {
+      __typename
+      id
+      name
+    }
+  }
+`);
 
 function parse(value) {
   var value$1 = value.feeds;
   return {
           feeds: value$1.map(function (value) {
                 return {
+                        __typename: value.__typename,
                         id: value.id,
                         name: value.name
                       };
@@ -23,7 +35,9 @@ function serialize(value) {
   var feeds = value$1.map(function (value) {
         var value$1 = value.name;
         var value$2 = value.id;
+        var value$3 = value.__typename;
         return {
+                __typename: value$3,
                 id: value$2,
                 name: value$1
               };
@@ -45,9 +59,9 @@ function makeDefaultVariables(param) {
   
 }
 
-var GetAllFeeds = {
+var GetAllFeeds_inner = {
   Raw: Raw,
-  query: "query getAllFeeds  {\nfeeds(first: 1000)  {\nid  \nname  \n}\n\n}\n",
+  query: query,
   parse: parse,
   serialize: serialize,
   serializeVariables: serializeVariables,
@@ -55,7 +69,54 @@ var GetAllFeeds = {
   makeDefaultVariables: makeDefaultVariables
 };
 
+var include = ApolloClient__React_Hooks_UseQuery.Extend({
+      query: query,
+      Raw: Raw,
+      parse: parse,
+      serialize: serialize,
+      serializeVariables: serializeVariables
+    });
+
+var GetAllFeeds_refetchQueryDescription = include.refetchQueryDescription;
+
+var GetAllFeeds_use = include.use;
+
+var GetAllFeeds_useLazy = include.useLazy;
+
+var GetAllFeeds_useLazyWithVariables = include.useLazyWithVariables;
+
+var GetAllFeeds = {
+  GetAllFeeds_inner: GetAllFeeds_inner,
+  Raw: Raw,
+  query: query,
+  parse: parse,
+  serialize: serialize,
+  serializeVariables: serializeVariables,
+  makeVariables: makeVariables,
+  makeDefaultVariables: makeDefaultVariables,
+  refetchQueryDescription: GetAllFeeds_refetchQueryDescription,
+  use: GetAllFeeds_use,
+  useLazy: GetAllFeeds_useLazy,
+  useLazyWithVariables: GetAllFeeds_useLazyWithVariables
+};
+
 var Raw$1 = {};
+
+var query$1 = (require("@apollo/client").gql`
+  query getFeedData($offset: Int!, $feedId: String!)  {
+    feed(id: $feedId)  {
+      __typename
+      id
+      name
+      rounds(first: 1000, skip: $offset, orderBy: unixTimestamp, orderDirection: asc)  {
+        __typename
+        number
+        value
+        unixTimestamp
+      }
+    }
+  }
+`);
 
 function parse$1(value) {
   var value$1 = value.feed;
@@ -65,11 +126,13 @@ function parse$1(value) {
   } else {
     var value$2 = value$1.rounds;
     tmp = {
+      __typename: value$1.__typename,
       id: value$1.id,
       name: value$1.name,
       rounds: value$2.map(function (value) {
             var value$1 = value.value;
             return {
+                    __typename: value.__typename,
                     number: GqlConverters.$$BigInt.parse(value.number),
                     value: !(value$1 == null) ? Caml_option.some(GqlConverters.$$BigInt.parse(value$1)) : undefined,
                     unixTimestamp: value.unixTimestamp
@@ -93,7 +156,9 @@ function serialize$1(value) {
           var value$3 = value$2 !== undefined ? GqlConverters.$$BigInt.serialize(Caml_option.valFromOption(value$2)) : null;
           var value$4 = value.number;
           var value$5 = GqlConverters.$$BigInt.serialize(value$4);
+          var value$6 = value.__typename;
           return {
+                  __typename: value$6,
                   number: value$5,
                   value: value$3,
                   unixTimestamp: value$1
@@ -101,7 +166,9 @@ function serialize$1(value) {
         });
     var value$3 = value$1.name;
     var value$4 = value$1.id;
+    var value$5 = value$1.__typename;
     feed = {
+      __typename: value$5,
       id: value$4,
       name: value$3,
       rounds: rounds
@@ -128,15 +195,45 @@ function makeVariables$1(offset, feedId, param) {
         };
 }
 
-var GetFeedData = {
+var GetFeedData_inner = {
   Raw: Raw$1,
-  query: "query getFeedData($offset: Int!, $feedId: String!)  {\nfeed(id: $feedId)  {\nid  \nname  \nrounds(first: 1000, skip: $offset, orderBy: unixTimestamp, orderDirection: asc)  {\nnumber  \nvalue  \nunixTimestamp  \n}\n\n}\n\n}\n",
+  query: query$1,
   parse: parse$1,
   serialize: serialize$1,
   serializeVariables: serializeVariables$1,
   makeVariables: makeVariables$1
 };
 
+var include$1 = ApolloClient__React_Hooks_UseQuery.Extend({
+      query: query$1,
+      Raw: Raw$1,
+      parse: parse$1,
+      serialize: serialize$1,
+      serializeVariables: serializeVariables$1
+    });
+
+var GetFeedData_refetchQueryDescription = include$1.refetchQueryDescription;
+
+var GetFeedData_use = include$1.use;
+
+var GetFeedData_useLazy = include$1.useLazy;
+
+var GetFeedData_useLazyWithVariables = include$1.useLazyWithVariables;
+
+var GetFeedData = {
+  GetFeedData_inner: GetFeedData_inner,
+  Raw: Raw$1,
+  query: query$1,
+  parse: parse$1,
+  serialize: serialize$1,
+  serializeVariables: serializeVariables$1,
+  makeVariables: makeVariables$1,
+  refetchQueryDescription: GetFeedData_refetchQueryDescription,
+  use: GetFeedData_use,
+  useLazy: GetFeedData_useLazy,
+  useLazyWithVariables: GetFeedData_useLazyWithVariables
+};
+
 exports.GetAllFeeds = GetAllFeeds;
 exports.GetFeedData = GetFeedData;
-/* GqlConverters Not a pure module */
+/* query Not a pure module */

@@ -15,6 +15,25 @@ var graphEndpoint = Belt_Option.getWithDefault(process.env.GRAPH_ENDPOINT, "http
 
 var client = ClientConfig.createInstance(undefined, "https://api.thegraph.com/subgraphs/name/alejandro-larumbe/chainlink-matic-mainnet", undefined);
 
+var Promise = require('bluebird');
+;
+
+var promiseWhile = (// some random javascript from the internet
+  function(condition, action) {
+    var resolver = Promise.defer();
+
+    var loop = function() {
+      if (!condition()) return resolver.resolve();
+      return Promise.cast(action())
+        .then(loop)
+        .catch(resolver.reject);
+    };
+
+    process.nextTick(loop);
+
+    return resolver.promise;
+  });
+
 var _getAllFeeds = Curry._6(client.rescript_query, {
         query: Query.GetAllFeeds.query,
         Raw: Query.GetAllFeeds.Raw,
@@ -23,14 +42,60 @@ var _getAllFeeds = Curry._6(client.rescript_query, {
         serializeVariables: Query.GetAllFeeds.serializeVariables
       }, undefined, undefined, undefined, undefined, undefined).then(function (result) {
       if (result.TAG === /* Ok */0) {
-        Belt_Array.map(result._0.data.feeds, (function (param) {
-                var feedData = "number,timestamp,value";
-                var finishedProcessing = false;
-                while(!finishedProcessing) {
-                  
-                };
-                Fs.writeFileSync("../rawData/" + param.name + ".csv", feedData, "utf8");
-                
+        Belt_Array.reduce(result._0.data.feeds, Promise.resolve(undefined), (function (previousPromise, param) {
+                var name = param.name;
+                var feedId = param.id;
+                return previousPromise.then(function (param) {
+                            var feedData = {
+                              contents: "number,timestamp,value"
+                            };
+                            var finishedProcessing = {
+                              contents: false
+                            };
+                            var offset = {
+                              contents: 0
+                            };
+                            return promiseWhile((function (param) {
+                                            return !finishedProcessing.contents;
+                                          }), (function (param) {
+                                            return Curry._6(client.rescript_query, {
+                                                          query: Query.GetFeedData.query,
+                                                          Raw: Query.GetFeedData.Raw,
+                                                          parse: Query.GetFeedData.parse,
+                                                          serialize: Query.GetFeedData.serialize,
+                                                          serializeVariables: Query.GetFeedData.serializeVariables
+                                                        }, undefined, undefined, undefined, undefined, Query.GetFeedData.makeVariables(offset.contents, feedId, undefined)).then(function (result) {
+                                                        console.log("making another query, with parameters offset=" + String(offset.contents) + " and feedId=" + feedId);
+                                                        if (result.TAG === /* Ok */0) {
+                                                          var match = result._0.data.feed;
+                                                          if (match !== undefined) {
+                                                            var rounds = match.rounds;
+                                                            Belt_Array.map(rounds, (function (param) {
+                                                                    feedData.contents = feedData.contents + ("\n" + param.number.toString() + "," + String(param.unixTimestamp) + "," + Belt_Option.mapWithDefault(param.value, "0", (function (prim) {
+                                                                              return prim.toString();
+                                                                            })));
+                                                                    
+                                                                  }));
+                                                            offset.contents = offset.contents + 1000 | 0;
+                                                            if (rounds.length < 1000 || offset.contents === 2000) {
+                                                              finishedProcessing.contents = true;
+                                                              return ;
+                                                            } else {
+                                                              return ;
+                                                            }
+                                                          }
+                                                          console.log("No data available");
+                                                          return ;
+                                                        }
+                                                        finishedProcessing.contents = true;
+                                                        console.log("Error error making round query with parameters offset=" + String(offset.contents) + " and feedId=" + feedId + ": ", result._0);
+                                                        
+                                                      });
+                                          })).then(function (param) {
+                                        Fs.writeFileSync("../rawData/" + name.replace("/", "--") + ".csv", feedData.contents, "utf8");
+                                        
+                                      });
+                          });
               }));
         return ;
       }
@@ -40,5 +105,6 @@ var _getAllFeeds = Curry._6(client.rescript_query, {
 
 exports.graphEndpoint = graphEndpoint;
 exports.client = client;
+exports.promiseWhile = promiseWhile;
 exports._getAllFeeds = _getAllFeeds;
 /*  Not a pure module */
