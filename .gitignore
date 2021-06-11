@@ -1,1 +1,3 @@
 rawData/*.csv
+yarn.lock
+.vscode
