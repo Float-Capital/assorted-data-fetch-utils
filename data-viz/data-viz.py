@@ -5,7 +5,8 @@ from matplotlib import pyplot as plt
 
 # read in the data
 headers = ['number', 'timestamp', 'value']
-df = pd.read_csv('../rawData/MATIC--USD.csv', names=headers)
+# df = pd.read_csv('./ETH--USD--MAINNET.csv', names=headers)
+df = pd.read_csv('./ETH--USD--MATIC.csv', names=headers)
 """
 Analysis of heartbeat
 (Time and frequency between updates.)
@@ -22,6 +23,8 @@ mylist = [x / 60 for x in mylist]  # Converting to minutes
 
 s = pd.DataFrame(mylist)
 ax = s.boxplot()  # box plot analysis
+ax.axes.set_ylabel("Minutes between price updates")
+ax.axes.set_xlabel("ETH/USD Polygon Price Feed")
 plt.show()
 """
 Analysis of percentage changes
@@ -34,7 +37,8 @@ pecentage_changes = price_series.pct_change()
 # ax = pecentage_changes.plot.kde()
 
 ax = pecentage_changes.plot.hist(bins=150, alpha=0.5)
-
+ax.axes.set_ylabel("Frequency")
+ax.axes.set_xlabel("Percentage change between price update")
 # ax = df.boxplot()
 
 plt.show()

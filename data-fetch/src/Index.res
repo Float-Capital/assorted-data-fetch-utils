@@ -9,6 +9,11 @@ let client = ClientConfig.createInstance(
   (),
 )
 
+// let client = ClientConfig.createInstance(
+//   ~graphqlEndpoint="https://api.thegraph.com/subgraphs/name/skofman/chainlink",
+//   (),
+// )
+
 %%raw(`var Promise = require('bluebird');`)
 
 let promiseWhile: (unit => bool, unit => JsPromise.t<unit>) => JsPromise.t<unit> = %raw(`
@@ -48,7 +53,9 @@ let _getAllFeeds = client.query(~query=module(Query.GetAllFeeds), ())->JsPromise
               ~query=module(Query.GetFeedData),
               Query.GetFeedData.makeVariables(~offset=offset.contents, ~feedId, ()),
             )->JsPromise.map(result => {
-              Js.log(`making another query, with parameters offset=${offset.contents->Int.toString} and feedId=${feedId}`)
+              Js.log(
+                `making another query, with parameters offset=${offset.contents->Int.toString} and feedId=${feedId}`,
+              )
               switch result {
               | Ok({data: {feed: Some({rounds})}}) =>
                 let _processRound = rounds->Array.map(({number, unixTimestamp, value}) => {
