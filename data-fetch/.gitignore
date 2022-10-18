@@ -3,3 +3,4 @@ node_modules
 .bsb.lock
 lib
 .graphql_ppx_cache
+*.bs.js
